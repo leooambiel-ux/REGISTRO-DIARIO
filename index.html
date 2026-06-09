@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro Diário da Equipe</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 24px;
+      font-size: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #4a90e2;
+    }
+
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #357abd;
+    }
+
+    #mensagem {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+      color: green;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Registro Diário da Equipe</h1>
+
+    <label for="data">Data</label>
+    <input type="date" id="data">
+
+    <label for="nome">Nome</label>
+    <input type="text" id="nome" placeholder="Seu nome">
+
+    <label for="resumo">Resumo do dia</label>
+    <textarea id="resumo" placeholder="Descreva o que foi feito hoje..."></textarea>
+
+    <label for="anotacoes">Anotações importantes</label>
+    <textarea id="anotacoes" placeholder="Informações que não podem ser esquecidas..."></textarea>
+
+    <button onclick="salvar()">Salvar registro</button>
+
+    <p id="mensagem">Registro salvo com sucesso!</p>
+  </div>
+
+  <script>
+    // Coloque aqui o link gerado pelo Google Apps Script
+    var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzY_XYps2T3DTa5pPUm_UwQ8-bs_LJCF1lRwLYSnaCo1ewxnuRt9qQgwMA-06Z-243_2Q/exec";
+
+    // Preenche a data de hoje automaticamente
+    var hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('data').value = hoje;
+
+    function salvar() {
+      var data = document.getElementById('data').value;
+      var nome = document.getElementById('nome').value;
+      var resumo = document.getElementById('resumo').value;
+      var anotacoes = document.getElementById('anotacoes').value;
+
+      if (!nome || !resumo) {
+        alert('Por favor, preencha pelo menos o Nome e o Resumo do dia.');
+        return;
+      }
+
+      var payload = {
+        data: data,
+        nome: nome,
+        resumo: resumo,
+        anotacoes: anotacoes
+      };
+
+      fetch(URL_SCRIPT, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      .then(function() {
+        document.getElementById('mensagem').style.display = 'block';
+        document.getElementById('nome').value = '';
+        document.getElementById('resumo').value = '';
+        document.getElementById('anotacoes').value = '';
+        setTimeout(function() {
+          document.getElementById('mensagem').style.display = 'none';
+        }, 3000);
+      })
+      .catch(function() {
+        alert('Erro ao salvar. Verifique sua conexão.');
+      });
+    }
+  </script>
+
+</body>
+</html>
